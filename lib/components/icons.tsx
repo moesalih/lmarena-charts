@@ -1,7 +1,7 @@
 import {
   ArrowLeft,
   AtSign,
-  AudioWaveform,
+  ChartSpline,
   Bell,
   BellDot,
   BookUser,
@@ -38,7 +38,7 @@ import {
   Users,
 } from 'lucide-react'
 
-export const BrandIcon = AudioWaveform
+export const BrandIcon = ChartSpline
 
 // Navigation
 export const SearchIcon = Search

@@ -1,11 +1,11 @@
 import { readFileSync } from 'fs'
-import { AudioWaveform } from 'lucide-static'
+import { ChartSpline } from 'lucide-static'
 import { ImageResponse } from 'next/og'
 import path from 'path'
 
 import { accentColor, appDescription, appName } from '@/lib/metadata'
 
-const BrandIcon = AudioWaveform
+const BrandIcon = ChartSpline
 
 export const size = { width: 945, height: 630 }
 export const contentType = 'image/png'

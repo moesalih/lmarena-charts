@@ -28,11 +28,10 @@ import { haptics } from '@/lib/utils/haptics'
 export default function Home() {
   return (
     <div className="max-w-2xl mx-auto font-sans mb-10">
-      <Header shareText={`Check out Hallu by @moe!\n`} hideMenu>
+      <Header shareText={`Check out ${appName} by @moe!\n`} hideMenu>
         <BrandSection />
       </Header>
 
-      <FeedBySlug slug={'/feeds/explore/media'} />
       {/* <SearchForm /> */}
       {/* <FeatureGrid /> */}
     </div>

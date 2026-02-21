@@ -1,4 +1,4 @@
-export const appName = 'Hallu'
+export const appName = 'LMArena Charts'
 export const appDescription = ''
 export const accentColor = '#2299dd'
 
