@@ -1,4 +1,2 @@
+show chart for each category
 remove old code
-
-cron create new user
-user pfps

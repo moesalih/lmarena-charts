@@ -3,7 +3,7 @@ import { initTRPC } from '@trpc/server'
 import { z } from 'zod'
 
 import { uploadToR2 } from '@/lib/services/cloudflare-r2'
-import { sendAnalyticsEvent } from '@/lib/services/db'
+import { fetchScoresByCategory, sendAnalyticsEvent } from '@/lib/services/db'
 
 const t = initTRPC.create()
 
@@ -30,6 +30,10 @@ export const appTRPCRouter = t.router({
     const url = await uploadToR2(filename, body)
     if (!url) throw 'Failed to upload file'
     return { url }
+  }),
+
+  scoresByCategory: t.procedure.input(z.string()).query(async ({ input }) => {
+    return await fetchScoresByCategory(input)
   }),
 
   // posts: t.procedure.query(async () => {

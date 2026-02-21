@@ -1,28 +1,16 @@
 'use client'
 
+import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-import { SearchForm } from '@/app/search/page'
 import { AccountSheet } from '@/lib/components/account-sheet'
-import { FeedBySlug } from '@/lib/components/feeds'
-import {
-  AccountIcon,
-  BrandIcon,
-  ChannelIcon,
-  DeveloperIcon,
-  FeedIcon,
-  MiniAppsIcon,
-  NotificationIcon,
-  SearchIcon,
-  StarterPackIcon,
-  StatsIcon,
-  UserIcon,
-} from '@/lib/components/icons'
+import { AccountIcon, BrandIcon, FeedIcon } from '@/lib/components/icons'
 import { Header } from '@/lib/components/misc'
 import { Section } from '@/lib/components/ui'
 import { accentColor, appDescription, appName } from '@/lib/metadata'
 import { useAuth } from '@/lib/providers/auth-provider'
+import { fetchScoresByCategory } from '@/lib/services/trpc-client'
 import { haptics } from '@/lib/utils/haptics'
 
 export default function Home() {
@@ -32,8 +20,58 @@ export default function Home() {
         <BrandSection />
       </Header>
 
-      {/* <SearchForm /> */}
-      {/* <FeatureGrid /> */}
+      <CategoryScores category="text" />
+    </div>
+  )
+}
+
+function CategoryScores({ category }: { category: string }) {
+  const { data: scores, isLoading } = useQuery({
+    queryKey: ['scoresByCategory', category],
+    queryFn: () => fetchScoresByCategory(category),
+    staleTime: 5 * 60 * 1000,
+  })
+
+  if (isLoading) return <div className="p-4 text-center opacity-50">Loading...</div>
+  if (!scores?.length) return null
+
+  // Group scores by day
+  const days = [...new Set(scores.map((s: any) => s.day))] as string[]
+  // Get all unique models
+  const models = [...new Set(scores.map((s: any) => s.model))] as string[]
+
+  return (
+    <div className="p-4">
+      <h2 className="text-lg font-semibold mb-4 capitalize">{category} Scores</h2>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-white/10">
+              <th className="text-left py-2 pr-4 font-medium">Model</th>
+              {days.map((day: string) => (
+                <th key={day} className="text-right py-2 px-2 font-medium whitespace-nowrap">
+                  {day}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {models.map((model: string) => (
+              <tr key={model} className="border-b border-white/5">
+                <td className="py-2 pr-4 whitespace-nowrap">{model}</td>
+                {days.map((day: string) => {
+                  const score = scores.find((s: any) => s.model === model && s.day === day)
+                  return (
+                    <td key={day} className="text-right py-2 px-2 tabular-nums">
+                      {score ? Math.round(score.score) : '—'}
+                    </td>
+                  )
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

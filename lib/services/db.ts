@@ -42,6 +42,13 @@ export async function insertScore({ day, category, model, score }: LMArenaScore)
   return scoreRow
 }
 
+export async function fetchScoresByCategory(category: string) {
+  return await dbQuery({
+    sql: `SELECT * FROM lmarena_scores WHERE category = $1 ORDER BY day ASC, score DESC`,
+    params: [category],
+  })
+}
+
 export async function insertScores(scores: LMArenaScore[]) {
   if (!scores.length) return []
   const BATCH_SIZE = 25 // 4 params per row, stay under D1's 100 param limit

@@ -5,6 +5,7 @@ import type { AppTRPCRouter } from '@/lib/services/trpc-server'
 const trpc = createTRPCProxyClient<AppTRPCRouter>({ links: [httpLink({ url: '/api/trpc' })] })
 
 export const sendAnalyticsEvent = trpc.sendAnalyticsEvent.mutate
+export const fetchScoresByCategory = trpc.scoresByCategory.query
 
 export async function uploadFile(file) {
   const filename = (new Date().toISOString() + '_' + file.name).replace(/\s+/g, '_')
