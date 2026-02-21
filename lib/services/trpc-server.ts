@@ -3,7 +3,7 @@ import { initTRPC } from '@trpc/server'
 import { z } from 'zod'
 
 import { uploadToR2 } from '@/lib/services/cloudflare-r2'
-import { fetchAllPosts, fetchUserByUsername, fetchUserPosts, sendAnalyticsEvent } from '@/lib/services/db'
+import { sendAnalyticsEvent } from '@/lib/services/db'
 
 const t = initTRPC.create()
 
@@ -32,15 +32,15 @@ export const appTRPCRouter = t.router({
     return { url }
   }),
 
-  posts: t.procedure.query(async () => {
-    return await fetchAllPosts()
-  }),
-  userPosts: t.procedure.input(z.object({ username: z.string() })).query(async ({ input }) => {
-    return await fetchUserPosts(input)
-  }),
-  user: t.procedure.input(z.object({ username: z.string() })).query(async ({ input }) => {
-    return await fetchUserByUsername(input)
-  }),
+  // posts: t.procedure.query(async () => {
+  //   return await fetchAllPosts()
+  // }),
+  // userPosts: t.procedure.input(z.object({ username: z.string() })).query(async ({ input }) => {
+  //   return await fetchUserPosts(input)
+  // }),
+  // user: t.procedure.input(z.object({ username: z.string() })).query(async ({ input }) => {
+  //   return await fetchUserByUsername(input)
+  // }),
 })
 
 export type AppTRPCRouter = typeof appTRPCRouter
