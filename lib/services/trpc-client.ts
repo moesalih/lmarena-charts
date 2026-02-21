@@ -21,6 +21,6 @@ export async function uploadFile(file) {
   }
 }
 
-export const fetchAllPosts = trpc.posts.query
-export const fetchUserPosts = trpc.userPosts.query
-export const fetchUserByUsername = trpc.user.query
+// export const fetchAllPosts = trpc.posts.query
+// export const fetchUserPosts = trpc.userPosts.query
+// export const fetchUserByUsername = trpc.user.query

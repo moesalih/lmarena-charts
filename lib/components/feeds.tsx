@@ -4,12 +4,12 @@ import { usePathname } from 'next/navigation'
 
 import { ChannelFeed } from '@/app/c/[channelId]/layout-client'
 import { StarterPackFeed } from '@/app/starter-pack/[id]/layout-client'
-import { UserFeed } from '@/app/u/[username]/layout-client'
+// import { UserFeed } from '@/app/u/[username]/layout-client'
 import { Feed } from '@/lib/components/feed'
 import { ImageIcon, MediaIcon, PostsIcon, TrendingIcon } from '@/lib/components/icons'
 import { useAuth } from '@/lib/providers/auth-provider'
 import { fetchChannelsFeed, fetchExploreFeed, fetchFollowingFeed } from '@/lib/services/neynar'
-import { fetchAllPosts } from '@/lib/services/trpc-client'
+// import { fetchAllPosts } from '@/lib/services/trpc-client'
 
 export function FeedFromCurrentPath() {
   const pathname = usePathname()
@@ -21,10 +21,10 @@ export function FeedBySlug({ slug }: { slug: string }) {
   const display = slug.endsWith('/media') ? 'media' : undefined
 
   if (slug.startsWith('/feeds/following')) return <FollowingFeed display={display} />
-  if (slug.startsWith('/feeds/explore')) return <ExploreFeed display={display} />
+  // if (slug.startsWith('/feeds/explore')) return <ExploreFeed display={display} />
   if (slug.startsWith('/feeds/curated')) return <CuratedFeed display={display} />
   if (slug.startsWith('/c/')) return <ChannelFeed channelId={feedSlugToChannelId(slug)!} display={display} />
-  if (slug.startsWith('/u/')) return <UserFeed username={feedSlugToUsername(slug)!} display={display} />
+  // if (slug.startsWith('/u/')) return <UserFeed username={feedSlugToUsername(slug)!} display={display} />
   if (slug.startsWith('/starter-pack/'))
     return <StarterPackFeed id={feedSlugToStarterPackId(slug)!} display={display} />
   return null
@@ -79,12 +79,12 @@ function FollowingFeed({ display }: { display?: string }) {
     />
   )
 }
-function ExploreFeed({ display }: { display?: string }) {
-  const auth = useAuth()
-  return (
-    <Feed queryKey={['explore-feed', auth?.userFid]} queryFn={({ pageParam }) => fetchAllPosts()} display={display} />
-  )
-}
+// function ExploreFeed({ display }: { display?: string }) {
+//   const auth = useAuth()
+//   return (
+//     <Feed queryKey={['explore-feed', auth?.userFid]} queryFn={({ pageParam }) => fetchAllPosts()} display={display} />
+//   )
+// }
 function CuratedFeed({ display }: { display?: string }) {
   const auth = useAuth()
   const channelIds = ['photography', 'geometric', 'gifart', 'gen-art', 'bnw', 'abstract', 'pixelart', 'lightchasers']
