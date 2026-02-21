@@ -9,7 +9,7 @@ import { formatNumber } from '@/lib/utils/format'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
-export function BarChartFromQuery({ queryKey, queryFn, title, subtitleFunc, xProp, yProp }) {
+export function ChartFromQuery({ queryKey, queryFn, title, subtitleFunc, xProp, yProp, type = 'bar' }) {
   const { data, isLoading } = useQuery({
     queryKey: queryKey,
     queryFn: queryFn,
@@ -36,7 +36,7 @@ export function BarChartFromQuery({ queryKey, queryFn, title, subtitleFunc, xPro
   )
 }
 
-function ChartFromData({ data, title, xProp, yProp, type = 'bar' }) {
+export function ChartFromData({ data, title, xProp, yProp, type = 'bar' }) {
   const config = useMemo(() => {
     return getChartConfig({ data, title, xProp, yProp, type })
   }, [data])

@@ -1,7 +1,7 @@
 'use client'
 
 import { useChannelFromParams } from '@/app/c/[channelId]/layout-client'
-import { BarChartFromQuery } from '@/lib/utils/chart'
+import { ChartFromQuery } from '@/lib/utils/chart'
 import { formatDateShort, formatNumber } from '@/lib/utils/format'
 import { fetchChannelCastMetrics } from '@/lib/services/neynar'
 import { StatsRows } from '@/lib/components/ui'
@@ -20,7 +20,7 @@ export default function ChannelStats() {
   return (
     <div>
       <StatsRows stats={stats} />
-      <BarChartFromQuery
+      <ChartFromQuery
         queryKey={['channel-cast-stats', channel.id]}
         queryFn={() => fetchChannelCastMetrics({ channelId: channel.id })}
         subtitleFunc={undefined}
