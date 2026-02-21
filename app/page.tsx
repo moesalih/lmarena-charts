@@ -45,9 +45,11 @@ function CategoryScores({ category }: { category: string }) {
   if (isLoading) return <PaddedSpinner />
   if (!scores?.length) return null
 
-  // Group scores by day
+  return <CategoryScoresTable scores={scores} />
+}
+
+function CategoryScoresTable({ scores }: { scores: any[] }) {
   const days = [...new Set(scores.map((s: any) => s.day))] as string[]
-  // Get all unique models
   const models = [...new Set(scores.map((s: any) => s.model))] as string[]
 
   return (
