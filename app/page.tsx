@@ -6,8 +6,8 @@ import { useState } from 'react'
 
 import { AccountSheet } from '@/lib/components/account-sheet'
 import { AccountIcon, BrandIcon, FeedIcon } from '@/lib/components/icons'
-import { Header } from '@/lib/components/misc'
-import { Section } from '@/lib/components/ui'
+import { Header, TabsWithContent } from '@/lib/components/misc'
+import { PaddedSpinner, Section } from '@/lib/components/ui'
 import { accentColor, appDescription, appName } from '@/lib/metadata'
 import { useAuth } from '@/lib/providers/auth-provider'
 import { fetchScoresByCategory } from '@/lib/services/trpc-client'
@@ -20,9 +20,19 @@ export default function Home() {
         <BrandSection />
       </Header>
 
-      <CategoryScores category="text" />
+      <CategoryTabs />
     </div>
   )
+}
+
+const categories = ['text', 'code']
+
+function CategoryTabs() {
+  const tabs = categories.map((c) => ({
+    name: c,
+    content: <CategoryScores category={c} />,
+  }))
+  return <TabsWithContent tabs={tabs} />
 }
 
 function CategoryScores({ category }: { category: string }) {
@@ -32,7 +42,7 @@ function CategoryScores({ category }: { category: string }) {
     staleTime: 5 * 60 * 1000,
   })
 
-  if (isLoading) return <div className="p-4 text-center opacity-50">Loading...</div>
+  if (isLoading) return <PaddedSpinner />
   if (!scores?.length) return null
 
   // Group scores by day
@@ -42,7 +52,6 @@ function CategoryScores({ category }: { category: string }) {
 
   return (
     <div className="p-4">
-      <h2 className="text-lg font-semibold mb-4 capitalize">{category} Scores</h2>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
