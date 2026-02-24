@@ -14,7 +14,6 @@ import { useMemo } from 'react'
 import { Bar, Line } from 'react-chartjs-2'
 
 import { PaddedSpinner } from '@/lib/components/ui'
-import { accentColor } from '@/lib/metadata'
 import { formatNumber } from '@/lib/utils/format'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend)
@@ -56,11 +55,11 @@ export function ChartFromQuery({
   )
 }
 
-export function ChartFromData({ data, title, xProp, yProp, yProps, type = 'bar', stacked = true }: any) {
+export function ChartFromData({ data, title, xProp, yProp, yProps, type = 'bar', stacked = true, datasetColors }: any) {
   const yProps_ = yProps ?? (yProp ? [yProp] : [])
   const config = useMemo(() => {
-    return getChartConfig({ data, title, xProp, yProps: yProps_, type, stacked })
-  }, [data, stacked])
+    return getChartConfig({ data, title, xProp, yProps: yProps_, type, stacked, datasetColors })
+  }, [data, stacked, datasetColors])
 
   if (!data || !config) return null
   return <Chart config={config} />
@@ -77,20 +76,21 @@ function Chart({ config }) {
 //   return `https://quickchart.io/chart?w=500&h=350&c=${encodeURIComponent(JSON.stringify(chartConfig))}`
 // }
 
-const datasetColors = [accentColor, '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316']
+const defaultDatasetColors = ['#2299dd', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316']
 
-function getChartConfig({ data, title, xProp, yProps, type = 'bar', stacked = true }) {
+function getChartConfig({ data, title, xProp, yProps, type = 'bar', stacked = true, datasetColors }: any) {
+  const colors = datasetColors ?? defaultDatasetColors
   if (!data || !yProps?.length) return null
   const data_ = data?.slice().reverse()
   const isMulti = yProps.length > 1
   const chartData = {
     labels: data_.map((item: any) => item[xProp]?.slice(5, 10)),
     datasets: yProps.map((yProp: string, i: number) => {
-      const color = datasetColors[i % datasetColors.length]
+      const color = colors[i % colors.length]
       return {
         label: isMulti ? yProp : title,
         data: data_?.map((item: any) => item[yProp]),
-        backgroundColor: color, //type === 'line' ? 'transparent' : color,
+        backgroundColor: color,
         borderColor: color,
       }
     }),

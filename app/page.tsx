@@ -77,8 +77,20 @@ function useScoresDaysAndModels(scores: any[], maxModels?: number) {
   return { days, models }
 }
 
+function getModelColor(model: string) {
+  const name = model.toLowerCase()
+  if (name.startsWith('claude')) return '#2299dd'
+  if (name.startsWith('gemini')) return '#ef4444'
+  if (name.startsWith('veo')) return '#ef4444'
+  if (name.startsWith('gpt')) return '#10b981'
+  if (name.startsWith('sora')) return '#10b981'
+  if (name.startsWith('grok')) return '#f59e0b'
+  return '#888888'
+}
+
 function CategoryScoresChart({ scores }: { scores: any[] }) {
   const { days, models } = useScoresDaysAndModels(scores, 10)
+  const colors = useMemo(() => models.map(getModelColor), [models])
 
   const pivoted = useMemo(
     () =>
@@ -95,7 +107,15 @@ function CategoryScoresChart({ scores }: { scores: any[] }) {
 
   return (
     <div className="p-4">
-      <ChartFromData data={pivoted} title="Scores" xProp="day" yProps={models} type="line" stacked={false} />
+      <ChartFromData
+        data={pivoted}
+        title="Scores"
+        xProp="day"
+        yProps={models}
+        type="line"
+        stacked={false}
+        datasetColors={colors}
+      />
     </div>
   )
 }
