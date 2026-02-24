@@ -4,7 +4,7 @@ import { BrandIcon, ChannelIcon, FeedIcon, NotificationIcon, SearchIcon, UserIco
 import { useAuth } from '@/lib/providers/auth-provider'
 import { haptics } from '@/lib/utils/haptics'
 
-import { DynamicNotificationIcon } from './notifications/notifications-helpers'
+// import { DynamicNotificationIcon } from './notifications/notifications-helpers'
 
 export function Navigation({ children }: { children: React.ReactNode }) {
   const router = useRouter()

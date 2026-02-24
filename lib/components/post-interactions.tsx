@@ -10,7 +10,7 @@ import { formatNumber } from '@/lib/utils/format'
 import { haptics } from '@/lib/utils/haptics'
 
 import { AccountSheet } from './account-sheet'
-import { ComposeSheet } from './compose-sheet'
+// import { ComposeSheet } from './compose-sheet'
 import { Menu } from './sheets'
 
 export function PostInteractions({ cast, display = 'default' }) {
@@ -54,7 +54,7 @@ function ReplyButton({ cast }) {
   return (
     <div>
       <PostInteractionButton Icon={ReplyIcon} count={cast?.replies?.count} onPress={onPress} />
-      <ComposeSheet showSheet={showSheet} setShowSheet={setShowSheet} replyToCastHash={cast.hash} />
+      {/* <ComposeSheet showSheet={showSheet} setShowSheet={setShowSheet} replyToCastHash={cast.hash} /> */}
     </div>
   )
 }
