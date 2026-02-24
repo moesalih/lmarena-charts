@@ -63,9 +63,22 @@ function CategoryScores({ category }: { category: string }) {
   )
 }
 
+function useScoresDaysAndModels(scores: any[], maxModels?: number) {
+  const days = useMemo(() => ([...new Set(scores.map((s) => s.day))] as string[]).sort().reverse(), [scores])
+  const models = useMemo(() => {
+    const latestDay = days[0]
+    const sorted = ([...new Set(scores.map((s) => s.model))] as string[]).sort((a, b) => {
+      const aScore = scores.find((s) => s.day === latestDay && s.model === a)?.score ?? -Infinity
+      const bScore = scores.find((s) => s.day === latestDay && s.model === b)?.score ?? -Infinity
+      return bScore - aScore
+    })
+    return maxModels ? sorted.slice(0, maxModels) : sorted
+  }, [scores, days, maxModels])
+  return { days, models }
+}
+
 function CategoryScoresChart({ scores }: { scores: any[] }) {
-  const days = useMemo(() => [...new Set(scores.map((s) => s.day))].sort() as string[], [scores])
-  const models = useMemo(() => [...new Set(scores.map((s) => s.model))].slice(0, 10) as string[], [scores])
+  const { days, models } = useScoresDaysAndModels(scores, 10)
 
   const pivoted = useMemo(
     () =>
@@ -88,40 +101,30 @@ function CategoryScoresChart({ scores }: { scores: any[] }) {
 }
 
 function CategoryScoresTable({ scores }: { scores: any[] }) {
-  const days = [...new Set(scores.map((s: any) => s.day))] as string[]
-  const models = [...new Set(scores.map((s: any) => s.model))] as string[]
+  const { days, models } = useScoresDaysAndModels(scores)
+  const latestDay = days[0]
 
   return (
     <div className="p-4">
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-white/10">
-              <th className="text-left py-2 pr-4 font-medium">Model</th>
-              {days.map((day: string) => (
-                <th key={day} className="text-right py-2 px-2 font-medium whitespace-nowrap">
-                  {day}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {models.map((model: string) => (
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-white/10">
+            <th className="text-left py-2 pr-4 font-medium">Model</th>
+            <th className="text-right py-2 px-2 font-medium"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {models.map((model: string) => {
+            const score = scores.find((s: any) => s.model === model && s.day === latestDay)
+            return (
               <tr key={model} className="border-b border-white/5">
                 <td className="py-2 pr-4 whitespace-nowrap">{model}</td>
-                {days.map((day: string) => {
-                  const score = scores.find((s: any) => s.model === model && s.day === day)
-                  return (
-                    <td key={day} className="text-right py-2 px-2 tabular-nums">
-                      {score ? Math.round(score.score) : '—'}
-                    </td>
-                  )
-                })}
+                <td className="text-right py-2 px-2 tabular-nums">{score ? Math.round(score.score) : '—'}</td>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            )
+          })}
+        </tbody>
+      </table>
     </div>
   )
 }

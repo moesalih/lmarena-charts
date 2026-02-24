@@ -1,5 +1,3 @@
 dataset colors grouped by model org
-sort models based on most recent day order
-show table under chart with most recent day scores
 
 remove old code
