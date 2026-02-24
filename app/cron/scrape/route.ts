@@ -60,10 +60,19 @@ async function fetchAndParseScores(category: string) {
 }
 
 export async function GET() {
-  const categories = ['text', 'code']
-  const [text, code] = await Promise.all(categories.map(fetchAndParseScores))
+  const categories = [
+    'text',
+    'code',
+    'vision',
+    'text-to-image',
+    'image-edit',
+    'search',
+    'text-to-video',
+    'image-to-video',
+  ]
+  const results = await Promise.all(categories.map(fetchAndParseScores))
 
-  const allScores = [...text, ...code]
+  const allScores = results.flat()
   const day = allScores[0]?.day ?? new Date().toISOString().slice(0, 10)
   await deleteScoresByDay(day)
   const inserted = await insertScores(
@@ -71,8 +80,7 @@ export async function GET() {
   )
 
   return Response.json({
-    text,
-    code,
     inserted: inserted.length,
+    counts: Object.fromEntries(categories.map((c, i) => [c, results[i].length])),
   })
 }
