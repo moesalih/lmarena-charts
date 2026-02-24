@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { AccountSheet } from '@/lib/components/account-sheet'
 import { AccountIcon, BrandIcon, FeedIcon } from '@/lib/components/icons'
@@ -11,11 +11,12 @@ import { PaddedSpinner, Section } from '@/lib/components/ui'
 import { accentColor, appDescription, appName } from '@/lib/metadata'
 import { useAuth } from '@/lib/providers/auth-provider'
 import { fetchScoresByCategory } from '@/lib/services/trpc-client'
+import { ChartFromData } from '@/lib/utils/chart'
 import { haptics } from '@/lib/utils/haptics'
 
 export default function Home() {
   return (
-    <div className="max-w-2xl mx-auto font-sans mb-10">
+    <div className=" font-sans mb-10">
       <Header shareText={`Check out ${appName} by @moe!\n`} hideMenu>
         <BrandSection />
       </Header>
@@ -25,7 +26,16 @@ export default function Home() {
   )
 }
 
-const categories = ['text', 'code']
+const categories = [
+  'text',
+  'code',
+  'vision',
+  'text-to-image',
+  'image-edit',
+  'search',
+  'text-to-video',
+  'image-to-video',
+]
 
 function CategoryTabs() {
   const tabs = categories.map((c) => ({
@@ -45,7 +55,36 @@ function CategoryScores({ category }: { category: string }) {
   if (isLoading) return <PaddedSpinner />
   if (!scores?.length) return null
 
-  return <CategoryScoresTable scores={scores} />
+  return (
+    <>
+      <CategoryScoresChart scores={scores} />
+      <CategoryScoresTable scores={scores} />
+    </>
+  )
+}
+
+function CategoryScoresChart({ scores }: { scores: any[] }) {
+  const days = useMemo(() => [...new Set(scores.map((s) => s.day))].sort() as string[], [scores])
+  const models = useMemo(() => [...new Set(scores.map((s) => s.model))].slice(0, 10) as string[], [scores])
+
+  const pivoted = useMemo(
+    () =>
+      days.map((day) => {
+        const row: Record<string, any> = { day }
+        models.forEach((model) => {
+          const s = scores.find((s) => s.day === day && s.model === model)
+          row[model] = s ? Math.round(s.score) : null
+        })
+        return row
+      }),
+    [scores, days, models],
+  )
+
+  return (
+    <div className="p-4">
+      <ChartFromData data={pivoted} title="Scores" xProp="day" yProps={models} type="line" stacked={false} />
+    </div>
+  )
 }
 
 function CategoryScoresTable({ scores }: { scores: any[] }) {

@@ -1,15 +1,35 @@
 import { useQuery } from '@tanstack/react-query'
-import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from 'chart.js'
+import {
+  BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+} from 'chart.js'
 import { useMemo } from 'react'
-import { Bar } from 'react-chartjs-2'
+import { Bar, Line } from 'react-chartjs-2'
 
 import { PaddedSpinner } from '@/lib/components/ui'
 import { accentColor } from '@/lib/metadata'
 import { formatNumber } from '@/lib/utils/format'
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
+ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend)
 
-export function ChartFromQuery({ queryKey, queryFn, title, subtitleFunc, xProp, yProp, type = 'bar' }) {
+export function ChartFromQuery({
+  queryKey,
+  queryFn,
+  title,
+  subtitleFunc,
+  xProp,
+  yProp,
+  yProps,
+  type = 'bar',
+  stacked = true,
+}: any) {
   const { data, isLoading } = useQuery({
     queryKey: queryKey,
     queryFn: queryFn,
@@ -31,15 +51,16 @@ export function ChartFromQuery({ queryKey, queryFn, title, subtitleFunc, xProp, 
         {subtitle && <div className="whitespace-pre-wrap text-right">{subtitle}</div>}
       </div>
 
-      <ChartFromData data={data} title={title} xProp={xProp} yProp={yProp} />
+      <ChartFromData data={data} title={title} xProp={xProp} yProp={yProp} yProps={yProps} stacked={stacked} />
     </div>
   )
 }
 
-export function ChartFromData({ data, title, xProp, yProp, type = 'bar' }) {
+export function ChartFromData({ data, title, xProp, yProp, yProps, type = 'bar', stacked = true }: any) {
+  const yProps_ = yProps ?? (yProp ? [yProp] : [])
   const config = useMemo(() => {
-    return getChartConfig({ data, title, xProp, yProp, type })
-  }, [data])
+    return getChartConfig({ data, title, xProp, yProps: yProps_, type, stacked })
+  }, [data, stacked])
 
   if (!data || !config) return null
   return <Chart config={config} />
@@ -48,36 +69,41 @@ export function ChartFromData({ data, title, xProp, yProp, type = 'bar' }) {
 function Chart({ config }) {
   if (!config) return null
   // return <img src={getChartImageUrl(config)} className="w-full mb-5" />
-  return <Bar data={config.data} options={config.options} />
+  const Component = config.type === 'line' ? Line : Bar
+  return <Component data={config.data} options={config.options} />
 }
 
 // function getChartImageUrl(chartConfig) {
 //   return `https://quickchart.io/chart?w=500&h=350&c=${encodeURIComponent(JSON.stringify(chartConfig))}`
 // }
 
-function getChartConfig({ data, title, xProp, yProp, type = 'bar' }) {
-  if (!data) return null
+const datasetColors = [accentColor, '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316']
+
+function getChartConfig({ data, title, xProp, yProps, type = 'bar', stacked = true }) {
+  if (!data || !yProps?.length) return null
   const data_ = data?.slice().reverse()
-  // const color = 'rgba(54, 162, 235, 1)'
-  const color = accentColor
+  const isMulti = yProps.length > 1
   const chartData = {
     labels: data_.map((item: any) => item[xProp]?.slice(5, 10)),
-    datasets: [
-      {
-        label: title,
+    datasets: yProps.map((yProp: string, i: number) => {
+      const color = datasetColors[i % datasetColors.length]
+      return {
+        label: isMulti ? yProp : title,
         data: data_?.map((item: any) => item[yProp]),
-        backgroundColor: type == 'line' ? 'transparent' : color,
+        backgroundColor: color, //type === 'line' ? 'transparent' : color,
         borderColor: color,
-      },
-    ],
+      }
+    }),
   }
-  const chart = {
-    type: type,
-    data: chartData,
-    options: chartOptions,
+  const options = {
+    ...chartOptions,
+    plugins: isMulti ? { ...chartOptions.plugins, legend: { display: true, position: 'right' } } : chartOptions.plugins,
+    scales: {
+      y: { ...chartOptions.scales.y, stacked },
+      x: { ...chartOptions.scales.x, stacked },
+    },
   }
-
-  return chart
+  return { type, data: chartData, options }
 }
 
 const gridLineColor = 'rgba(130, 130, 130, 0.2)'
@@ -87,6 +113,10 @@ const chartOptions = {
   maintainAspectRatio: true,
   aspectRatio: 1.45,
   animation: false,
+  interaction: {
+    mode: 'index',
+    intersect: false,
+  },
   elements: {
     point: {
       radius: 0, // Set pointRadius globally for all datasets
@@ -96,6 +126,7 @@ const chartOptions = {
   plugins: {
     legend: {
       display: false,
+      position: 'right',
       // labels: {
       //   boxWidth: 20,
       //   fontColor: '#888',
@@ -105,10 +136,10 @@ const chartOptions = {
   scales: {
     y: {
       stacked: true,
+      beginAtZero: false,
       ticks: {
-        beginAtZero: true,
         fontColor: '#888',
-        callback: formatNumber,
+        // callback: formatNumber,
       },
       grid: {
         color: gridLineColor,
