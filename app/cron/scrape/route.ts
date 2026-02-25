@@ -18,33 +18,29 @@ function parseTable(html: string, category: string) {
   return rows
     .slice(1)
     .map((row) => {
-      const cells = [...row[1].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map((m) => stripTags(m[1]))
-      if (cells.length < 5) return null
+      const cellsHtml = [...row[1].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map((m) => m[1])
+      if (cellsHtml.length < 5) return null
 
-      const rank = parseInt(cells[0])
-      // Cell 2 patterns:
-      //   "Anthropic claude-opus-4-6 Anthropic · Proprietary" (org icon + model + org + license)
-      //   "grok-4.1 xAI · Proprietary" (model + org + license, no icon)
-      const modelParts = cells[2].split('·').map((s) => s.trim())
-      const license = modelParts[1] || ''
-      const words = modelParts[0].split(/\s+/)
-      // Last word before · is always the organization
-      const organization = words.length >= 2 ? words[words.length - 1] : ''
-      // Model is everything between optional leading org and trailing org
-      const middle = words.slice(0, -1)
-      const firstLower = middle.length > 0 ? middle[0].toLowerCase() : ''
-      const orgLower = organization.toLowerCase()
-      const model =
-        middle.length > 0 && (firstLower.startsWith(orgLower) || orgLower.startsWith(firstLower))
-          ? middle.slice(1).join(' ')
-          : middle.join(' ')
+      const rank = parseInt(stripTags(cellsHtml[0]))
+
+      // Extract model name from <a title="..."> in the name cell
+      const modelMatch = cellsHtml[2].match(/<a[^>]*\stitle="([^"]+)"/)
+      const model = modelMatch ? modelMatch[1] : ''
+
+      // Extract org and license from the subtitle span
+      const subtitleMatch = cellsHtml[2].match(/<span[^>]*text-text-secondary[^>]*>([\s\S]*?)<\/span>/)
+      const subtitle = subtitleMatch ? stripTags(subtitleMatch[1]) : ''
+      const subtitleParts = subtitle.split('·').map((s) => s.trim())
+      const organization = subtitleParts[0] || ''
+      const license = subtitleParts[1] || ''
 
       // Score: "1505 ±8" or "1561 +14/-14"
-      const scoreMatch = cells[3].match(/^(\d+)\s+(.+)$/)
-      const score = scoreMatch ? parseInt(scoreMatch[1]) : parseInt(cells[3])
+      const scoreText = stripTags(cellsHtml[3])
+      const scoreMatch = scoreText.match(/^(\d+)\s+(.+)$/)
+      const score = scoreMatch ? parseInt(scoreMatch[1]) : parseInt(scoreText)
       const ci = scoreMatch ? scoreMatch[2] : ''
 
-      const votes = parseInt(cells[4].replace(/,/g, ''))
+      const votes = parseInt(stripTags(cellsHtml[4]).replace(/,/g, ''))
 
       const day = new Date().toISOString().slice(0, 10)
 
@@ -80,7 +76,7 @@ export async function GET() {
   )
 
   return Response.json({
-    inserted: inserted.length,
+    inserted: inserted,
     counts: Object.fromEntries(categories.map((c, i) => [c, results[i].length])),
   })
 }
