@@ -89,7 +89,7 @@ function getModelColor(model: string) {
 }
 
 function CategoryScoresChart({ scores }: { scores: any[] }) {
-  const { days, models } = useScoresDaysAndModels(scores, 10)
+  const { days, models } = useScoresDaysAndModels(scores, 20)
   const colors = useMemo(() => models.map(getModelColor), [models])
 
   const pivoted = useMemo(
