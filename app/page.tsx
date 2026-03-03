@@ -59,6 +59,13 @@ function CategoryScores({ category }: { category: string }) {
     <>
       <CategoryScoresChart scores={scores} />
       <CategoryScoresTable scores={scores} />
+
+      <div className="text-xs opacity-50 text-center mt-4">
+        Data from{' '}
+        <a href="https://arena.ai/leaderboard/" target="_blank" className="underline">
+          arena.ai/leaderboard
+        </a>
+      </div>
     </>
   )
 }
@@ -83,6 +90,7 @@ function getModelColor(model: string) {
   if (name.startsWith('gemini')) return '#ef4444'
   if (name.startsWith('veo')) return '#ef4444'
   if (name.startsWith('gpt')) return '#10b981'
+  if (name.startsWith('chatgpt')) return '#10b981'
   if (name.startsWith('sora')) return '#10b981'
   if (name.startsWith('grok')) return '#f59e0b'
   return '#888888'
