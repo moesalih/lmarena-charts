@@ -142,10 +142,10 @@ function CategoryScoresTable({ scores }: { scores: any[] }) {
     <div className="p-4">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-white/10">
+          <tr className="border-b border-neutral-400/15 opacity-25 text-xs">
             <th className="w-4" />
-            <th className="text-left py-2 pr-4 font-medium">Model</th>
-            <th className="text-right py-2 px-2 font-medium">Score</th>
+            <th className="text-left py-2 pr-4 font-medium">model</th>
+            <th className="text-right py-2 px-2 font-medium">score</th>
           </tr>
         </thead>
         <tbody>
@@ -153,7 +153,7 @@ function CategoryScoresTable({ scores }: { scores: any[] }) {
             const score = scores.find((s: any) => s.model === model && s.day === latestDay)
             const color = getModelColor(model)
             return (
-              <tr key={model} className="border-b border-white/10">
+              <tr key={model} className="border-b border-neutral-400/15">
                 <td className="py-2 pr-2 w-4">
                   <span className="size-3 rounded-xs block" style={{ backgroundColor: color }} />
                 </td>
