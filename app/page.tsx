@@ -58,10 +58,10 @@ function CategoryScores({ category }: { category: string }) {
   return (
     <>
       <div className="flex flex-col lg:flex-row lg:items-start">
-        <div className="lg:flex-1 min-w-0">
+        <div className="order-1 lg:order-2 lg:flex-1 min-w-0">
           <CategoryScoresChart scores={scores} />
         </div>
-        <div className="lg:w-1/3 lg:shrink-0">
+        <div className="order-2 lg:order-1 lg:w-1/3 lg:shrink-0">
           <CategoryScoresTable scores={scores} />
         </div>
       </div>
