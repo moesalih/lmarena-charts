@@ -97,7 +97,7 @@ function getChartConfig({ data, title, xProp, yProps, type = 'bar', stacked = tr
   }
   const options = {
     ...chartOptions,
-    plugins: isMulti ? { ...chartOptions.plugins, legend: { display: true, position: 'right' } } : chartOptions.plugins,
+    // plugins: isMulti ? { ...chartOptions.plugins, legend: { display: true, position: 'right' } } : chartOptions.plugins,
     scales: {
       y: { ...chartOptions.scales.y, stacked },
       x: { ...chartOptions.scales.x, stacked },

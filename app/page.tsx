@@ -57,8 +57,14 @@ function CategoryScores({ category }: { category: string }) {
 
   return (
     <>
-      <CategoryScoresChart scores={scores} />
-      <CategoryScoresTable scores={scores} />
+      <div className="flex flex-col lg:flex-row lg:items-start">
+        <div className="lg:flex-1 min-w-0">
+          <CategoryScoresChart scores={scores} />
+        </div>
+        <div className="lg:w-1/3 lg:shrink-0">
+          <CategoryScoresTable scores={scores} />
+        </div>
+      </div>
 
       <div className="text-xs opacity-50 text-center mt-4">
         Data from{' '}
@@ -137,15 +143,20 @@ function CategoryScoresTable({ scores }: { scores: any[] }) {
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-white/10">
+            <th className="w-4" />
             <th className="text-left py-2 pr-4 font-medium">Model</th>
-            <th className="text-right py-2 px-2 font-medium"></th>
+            <th className="text-right py-2 px-2 font-medium">Score</th>
           </tr>
         </thead>
         <tbody>
           {models.map((model: string) => {
             const score = scores.find((s: any) => s.model === model && s.day === latestDay)
+            const color = getModelColor(model)
             return (
               <tr key={model} className="border-b border-white/5">
+                <td className="py-2 pr-2 w-4">
+                  <span className="size-3 rounded-xs block" style={{ backgroundColor: color }} />
+                </td>
                 <td className="py-2 pr-4 whitespace-nowrap">{model}</td>
                 <td className="text-right py-2 px-2 tabular-nums">{score ? Math.round(score.score) : '—'}</td>
               </tr>
