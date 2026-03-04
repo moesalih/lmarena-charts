@@ -153,11 +153,11 @@ function CategoryScoresTable({ scores }: { scores: any[] }) {
             const score = scores.find((s: any) => s.model === model && s.day === latestDay)
             const color = getModelColor(model)
             return (
-              <tr key={model} className="border-b border-white/5">
+              <tr key={model} className="border-b border-white/10">
                 <td className="py-2 pr-2 w-4">
                   <span className="size-3 rounded-xs block" style={{ backgroundColor: color }} />
                 </td>
-                <td className="py-2 pr-4 whitespace-nowrap">{model}</td>
+                <td className="py-2 pr-4 break-all">{model}</td>
                 <td className="text-right py-2 px-2 tabular-nums">{score ? Math.round(score.score) : '—'}</td>
               </tr>
             )
