@@ -90,15 +90,21 @@ function useScoresDaysAndModels(scores: any[], maxModels?: number) {
   return { days, models }
 }
 
+const blue = '#2299dd'
+const green = '#10b981'
+const orange = '#f59e0b'
+const red = '#ef4444'
+const purple = '#8b5cf6'
+
 function getModelColor(model: string) {
   const name = model.toLowerCase()
-  if (name.startsWith('claude')) return '#2299dd'
-  if (name.startsWith('gemini')) return '#ef4444'
-  if (name.startsWith('veo')) return '#ef4444'
-  if (name.startsWith('gpt')) return '#10b981'
-  if (name.startsWith('chatgpt')) return '#10b981'
-  if (name.startsWith('sora')) return '#10b981'
-  if (name.startsWith('grok')) return '#f59e0b'
+  if (name.startsWith('claude')) return orange
+  if (name.startsWith('gemini')) return blue
+  if (name.startsWith('veo')) return blue
+  if (name.startsWith('gpt')) return green
+  if (name.startsWith('chatgpt')) return green
+  if (name.startsWith('sora')) return green
+  if (name.startsWith('grok')) return red
   return '#888888'
 }
 
