@@ -176,15 +176,15 @@ function CategoryScoresTable({ scores }: { scores: any[] }) {
 
 function BrandSection() {
   return (
-    <div className="flex flex-row items-center gap-3 mb-4">
+    <div className="flex flex-row items-center gap-3 mb-0">
       <div
-        className="flex flex-row items-center justify-center size-[50px] rounded-[12px]"
+        className="flex flex-row items-center justify-center size-[32px] rounded-[25%]"
         style={{ backgroundColor: accentColor }}
       >
-        <BrandIcon className="size-[33px] text-white" />
+        <BrandIcon className="size-[66%] text-white" />
       </div>
       <div className="">
-        <h1 className="text-3xl font-medium">{appName}</h1>
+        <h1 className="text-xl font-medium">{appName}</h1>
         <div className="text-xs opacity-50">{appDescription}</div>
       </div>
     </div>
