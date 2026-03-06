@@ -114,7 +114,7 @@ const chartOptions = {
   aspectRatio: 1.45,
   animation: false,
   interaction: {
-    mode: 'index',
+    mode: 'nearest',
     intersect: false,
   },
   elements: {
