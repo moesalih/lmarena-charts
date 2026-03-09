@@ -121,6 +121,9 @@ const chartOptions = {
     point: {
       radius: 0, // Set pointRadius globally for all datasets
     },
+    line: {
+      tension: 0.4,
+    },
   },
 
   plugins: {
