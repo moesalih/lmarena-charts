@@ -27,7 +27,6 @@ export default function Home() {
 }
 
 const categories = [
-  'text',
   'code',
   'vision',
   'text-to-image',
@@ -42,7 +41,7 @@ function CategoryTabs() {
     name: c,
     content: <CategoryScores category={c} />,
   }))
-  return <TabsWithContent tabs={tabs} />
+  return <TabsWithContent tabs={tabs} initialTab="code" />
 }
 
 function CategoryScores({ category }: { category: string }) {
