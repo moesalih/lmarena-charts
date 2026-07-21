@@ -23,8 +23,9 @@ function parseTable(html: string, category: string) {
 
       const rank = parseInt(stripTags(cellsHtml[0]))
 
-      // Extract model name from <a title="..."> in the name cell
-      const modelMatch = cellsHtml[2].match(/<a[^>]*\stitle="([^"]+)"/)
+      // Model name is on a nested <span title="..."> (was on <a title="...">)
+      const modelMatch =
+        cellsHtml[2].match(/<span[^>]*title="([^"]+)"/) ?? cellsHtml[2].match(/<a[^>]*\stitle="([^"]+)"/)
       const model = modelMatch ? modelMatch[1] : ''
 
       // Extract org and license from the subtitle span
