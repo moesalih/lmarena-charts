@@ -149,7 +149,7 @@ function CategoryScoresTable({ scores }: { scores: any[] }) {
     .map((model: string) => scores.find((s: any) => s.model === model && s.day === latestDay))
     .filter(Boolean)
   const maxScore = Math.max(...latestScores.map((s: any) => s.score), 1)
-  const minScore = Math.min(...latestScores.map((s: any) => s.score)) - 15
+  const minScore = Math.min(...latestScores.map((s: any) => s.score)) - 30
 
   return (
     <div className="p-4">
