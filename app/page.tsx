@@ -27,6 +27,7 @@ export default function Home() {
 }
 
 const categories = [
+  'text',
   'code',
   'vision',
   'text-to-image',
@@ -41,7 +42,7 @@ function CategoryTabs() {
     name: c,
     content: <CategoryScores category={c} />,
   }))
-  return <TabsWithContent tabs={tabs} initialTab="code" />
+  return <TabsWithContent tabs={tabs} />
 }
 
 function CategoryScores({ category }: { category: string }) {
@@ -57,10 +58,10 @@ function CategoryScores({ category }: { category: string }) {
   return (
     <>
       <div className="flex flex-col lg:flex-row lg:items-start">
-        <div className="order-1 lg:order-2 lg:flex-1 min-w-0">
+        {/* <div className="order-1 lg:order-2 lg:flex-1 min-w-0">
           <CategoryScoresChart scores={scores} />
-        </div>
-        <div className="order-2 lg:order-1 lg:w-1/3 lg:shrink-0">
+        </div> */}
+        <div className="order-2 lg:order-1 lg:w-full lg:shrink-0">
           <CategoryScoresTable scores={scores} />
         </div>
       </div>
@@ -104,6 +105,7 @@ function getModelColor(model: string) {
   if (name.startsWith('chatgpt')) return green
   if (name.startsWith('sora')) return green
   if (name.startsWith('grok')) return red
+  if (name.startsWith('muse')) return purple
   return '#888888'
 }
 
@@ -157,6 +159,7 @@ function CategoryScoresTable({ scores }: { scores: any[] }) {
           {models.map((model: string) => {
             const score = scores.find((s: any) => s.model === model && s.day === latestDay)
             const color = getModelColor(model)
+            if (!score) return null
             return (
               <tr key={model} className="border-b border-neutral-400/15">
                 <td className="py-2 pr-2 w-4">
