@@ -16,7 +16,7 @@ import { haptics } from '@/lib/utils/haptics'
 
 export default function Home() {
   return (
-    <div className=" font-sans mb-10">
+    <div className="font-sans mb-10 max-w-3xl mx-auto">
       <Header shareText={`Check out ${appName} by @moe!\n`} hideMenu>
         <BrandSection />
       </Header>
@@ -145,6 +145,12 @@ function CategoryScoresTable({ scores }: { scores: any[] }) {
   const { days, models } = useScoresDaysAndModels(scores)
   const latestDay = days[0]
 
+  const latestScores = models
+    .map((model: string) => scores.find((s: any) => s.model === model && s.day === latestDay))
+    .filter(Boolean)
+  const maxScore = Math.max(...latestScores.map((s: any) => s.score), 1)
+  const minScore = Math.min(...latestScores.map((s: any) => s.score)) - 15
+
   return (
     <div className="p-4">
       <table className="w-full text-sm">
@@ -153,6 +159,7 @@ function CategoryScoresTable({ scores }: { scores: any[] }) {
             <th className="w-4" />
             <th className="text-left py-2 pr-4 font-medium">model</th>
             <th className="text-right py-2 px-2 font-medium">score</th>
+            <th className="w-2/5" />
           </tr>
         </thead>
         <tbody>
@@ -160,13 +167,17 @@ function CategoryScoresTable({ scores }: { scores: any[] }) {
             const score = scores.find((s: any) => s.model === model && s.day === latestDay)
             const color = getModelColor(model)
             if (!score) return null
+            const pct = Math.max(0, (score.score - minScore) / (maxScore - minScore)) * 100
             return (
               <tr key={model} className="border-b border-neutral-400/15">
                 <td className="py-2 pr-2 w-4">
                   <span className="size-3 rounded-xs block" style={{ backgroundColor: color }} />
                 </td>
                 <td className="py-2 pr-4 break-all">{model}</td>
-                <td className="text-right py-2 px-2 tabular-nums">{score ? Math.round(score.score) : '—'}</td>
+                <td className="text-right py-2 px-2 tabular-nums">{Math.round(score.score)}</td>
+                <td className="py-2 pl-2">
+                  <div className="h-3 rounded-xs" style={{ width: `${pct}%`, backgroundColor: color }} />
+                </td>
               </tr>
             )
           })}
