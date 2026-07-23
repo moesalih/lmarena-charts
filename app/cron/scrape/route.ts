@@ -48,7 +48,7 @@ function parseTable(html: string, category: string) {
       return { rank, model, organization, score, ci, votes, license, category, day }
     })
     .filter((r): r is NonNullable<typeof r> => r !== null)
-    .slice(0, 20)
+    .slice(0, 30)
 }
 
 async function fetchAndParseScores(category: string) {
